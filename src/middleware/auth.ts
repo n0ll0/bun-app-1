@@ -1,36 +1,33 @@
-import type { User } from '@/db/types';
-import { get } from '@/db/user';
+
+
+import { supabase } from '@/lib/supabase';
 
 class AuthError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = 'AuthError';
-	}
-};
-export async function useAuth(req) {
-	// Try to get token from TES_USER_COOKIE first
-	let token: string | null = null;
-	const cookie = req.headers.get('cookie');
-	if (cookie) {
-		const match = cookie.match(/TES_USER_COOKIE=([^;]+)/);
-		if (match) token = decodeURIComponent(match[1]);
-	}
-	// Fallback to Authentication header if not found in cookie
-	if (!token) {
-		token = req.headers.get('Authentication');
-	}
-	if (!token) {
-		throw new AuthError("No authentication token provided");
-	}
+  constructor(message: string) {
+    super(message);
+    this.name = 'AuthError';
+  }
+}
+/**
+ * Authenticates a request using Supabase Auth JWT in the Authorization header.
+ * Throws AuthError if not authenticated.
+ * Returns the Supabase user object.
+ */
+export async function useAuth(req: Request) {
+  // Get the Bearer token from the Authorization header
+  const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new AuthError('No Bearer token provided');
+  }
+  const token = authHeader.replace('Bearer ', '').trim();
+  if (!token) {
+    throw new AuthError('No token found');
+  }
 
-	// Try to parse as integer user id
-	const userId = parseInt(token, 10);
-	if (!userId || isNaN(userId)) {
-		throw new AuthError("Invalid authentication token");
-	}
-	const user = await get({ id: userId });
-	if (!user) {
-		throw new AuthError("No user found");
-	}
-	return user;
+  // Validate the JWT with Supabase
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data.user) {
+    throw new AuthError('Invalid or expired token');
+  }
+  return data.user;
 }

@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuthToken } from "./AuthContext";
-import type { User } from '@/db/types';
-
+import { useAuthToken } from "@/hooks/AuthContext";
+import type { User } from "@supabase/supabase-js";
 
 export function LoginForm() {
-  const { setUser, setToken } = useAuthToken();
+  const { setUser } = useAuthToken();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,17 +18,14 @@ export function LoginForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-      credentials: "include",
     });
     if (res.ok) {
-      // Cookie is set by server, just reload
-      const data: { success: boolean; user: User; } = await res.json();
+      const data: { success: boolean; user: User; access_token: string } = await res.json();
       if (data.success) {
-        setToken(data.user.id);
+        // Store token in localStorage for AuthContext to use
+        localStorage.setItem('access_token', data.access_token);
         setUser(data.user);
       }
-
-
     } else {
       setError("Invalid credentials");
     }

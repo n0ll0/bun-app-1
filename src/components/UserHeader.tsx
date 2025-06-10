@@ -1,6 +1,5 @@
 import { useEffect, useState, type JSX } from "react";
 import { Link } from 'react-router-dom';
-import type { User } from '@/db/types';
 
 import {
 	NavigationMenuContent,
@@ -12,7 +11,7 @@ import {
 	NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import { User as UserIcon } from 'lucide-react';
-import { useAuthToken } from "./AuthContext";
+import { useAuthToken } from "@/hooks/AuthContext";
 import { cn } from "@/lib/utils";
 
 export function UserHeader() {

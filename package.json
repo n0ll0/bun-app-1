@@ -17,6 +17,7 @@
     "@radix-ui/react-navigation-menu": "^1.2.13",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
+    "@supabase/supabase-js": "^2.50.0",
     "@types/jest": "^29.5.14",
     "bun-plugin-tailwind": "^0.0.15",
     "class-variance-authority": "^0.7.1",

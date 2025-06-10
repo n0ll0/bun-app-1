@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import { Card, CardContent, CardHeader } from "../ui/card";
-import Posts from "../Posts";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Posts from "@/components/Posts";
 
 export default function Home() {
 	return (

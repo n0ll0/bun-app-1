@@ -1,6 +1,6 @@
 import { FileSystemRouter, serve, file } from "bun";
 import { env } from "process";
-import index from '@/public/index.html';
+import index from '@/index.html';
 import '@/db/setup';
 
 const router = new FileSystemRouter({
